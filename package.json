@@ -1,0 +1,20 @@
+{
+  "name": "newman-training",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:api": "newman run ApiTestFund.postman_collection.json -e INT.postman_environment.json -d users.json -r cli,allure",
+    "report:generate": "allure generate allure-results",
+    "report:open": "allure open allure-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "allure": "^3.17.0",
+    "newman": "^6.2.2",
+    "newman-reporter-allure": "^3.12.1"
+  }
+}

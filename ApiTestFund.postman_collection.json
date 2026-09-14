@@ -1,0 +1,242 @@
+{
+  "info": {
+    "_postman_id": "bf7c9727-0b4b-427c-996f-2c844096a4e3",
+    "name": "ApiTestFund",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57930822",
+    "_collection_link": "https://go.postman.co/collection/57930822-bf7c9727-0b4b-427c-996f-2c844096a4e3?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Test",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {\n  pm.response.to.have.status(200);\n});\n\npm.test(\"Post ID is 1\", () => {\n  const body = pm.response.json();\n\n  pm.expect(body.id).to.eql(1);\n});\n\npm.test(\"Title exists\", () => {\n  const body = pm.response.json();\n\n  pm.expect(body.title).to.exist;\n});\npm.test(\"Post belongs to requested user\", () => {\n  const body = pm.response.json();\n\n  pm.expect(body.userId).to.eql(1);\n});\n\nconst body = pm.response.json();\n\npm.test(\"Response has expected fields\", () => {\n  pm.expect(body).to.have.property(\"id\");\n  pm.expect(body).to.have.property(\"userId\");\n  pm.expect(body).to.have.property(\"title\");\n  pm.expect(body).to.have.property(\"body\");\n});\n\npm.test(\"Response fields have correct types\", () => {\n  pm.expect(body.id).to.be.a(\"number\");\n  pm.expect(body.userId).to.be.a(\"number\");\n  pm.expect(body.title).to.be.a(\"string\");\n  pm.expect(body.body).to.be.a(\"string\");\n});\n\npm.test(\"Title is not empty\", () => {\n  pm.expect(body.title).to.not.be.empty;\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/posts/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Post Test",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test post\",\n  \"body\": \"Hello API\",\n  \"userId\": 1\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/posts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    },
+    {
+      "name": "getArr",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();\r\n\r\nconsole.log(\"iterationData userId:\", pm.iterationData.get(\"userId\"));\r\n\r\nconst expectedUserId = Number(pm.iterationData.get(\"userId\"));\r\n\r\npm.test(\"Every returned post belongs to requested user\", () => {\r\n    body.forEach(post => {\r\n        pm.expect(post.userId).to.eql(expectedUserId);\r\n    });\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/posts?userId={{userId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "negativeTesting",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Non-existing post does not return 200\", () => {\r\n  pm.expect(pm.response.code).to.not.eql(200);\r\n});\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts/999999",
+          "protocol": "https",
+          "host": [
+            "jsonplaceholder",
+            "typicode",
+            "com"
+          ],
+          "path": [
+            "posts",
+            "999999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "negative post test",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();\r\n\r\npm.collectionVariables.set(\"postId\", body.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Chained test\",\r\n  \"body\": \"Created from Postman\",\r\n  \"userId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts",
+          "protocol": "https",
+          "host": [
+            "jsonplaceholder",
+            "typicode",
+            "com"
+          ],
+          "path": [
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "console.log(pm.collectionVariables.get(\"postId\"));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts/{{postId}}",
+          "protocol": "https",
+          "host": [
+            "jsonplaceholder",
+            "typicode",
+            "com"
+          ],
+          "path": [
+            "posts",
+            "{{postId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "postId",
+      "value": ""
+    },
+    {
+      "key": "randomUserId",
+      "value": ""
+    }
+  ]
+}
