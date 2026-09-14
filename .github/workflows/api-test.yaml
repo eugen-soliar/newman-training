@@ -22,3 +22,10 @@ jobs:
 
       - name: Run Newman API tests
         run: npm run test:api
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results
+          path: allure-results/
